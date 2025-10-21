@@ -1,0 +1,8 @@
+# GameChanger Configuration
+# Paths can use environment variables like %USERNAME% or %USERPROFILE%
+
+# Root directory for backups
+BackupRoot=D:\GameChanger\Backup
+
+# Saved Games location
+SavedGamesPath=D:\Users\%USERNAME%\Saved Games

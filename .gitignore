@@ -1,2 +1,34 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+# GameChanger - DCS Configuration Manager
+# Python Virtual Environment
+venv/
+Lib/
+Scripts/
+Include/
+pyvenv.cfg
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build artifacts
+build/
+dist/*.exe
+*.egg-info/
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*.backup

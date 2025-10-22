@@ -217,7 +217,7 @@ def main(args=None):
     
     # Initialize logging first (to avoid duplicate setup)
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    backup_name = f"{timestamp}-{args.name}" if args.name else f"{timestamp}-Backup"
+    backup_name = f"{timestamp}-{args.name}" if args.name else f"{timestamp}-Config-Backup"
     
     # Create a temp config to get backup root for logging setup
     temp_config = {'backup_root': Path(r"D:\GameChanger\Backup")}

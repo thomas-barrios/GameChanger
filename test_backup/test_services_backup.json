@@ -1,0 +1,42 @@
+{
+  "backup_timestamp": "2025-10-22_17-40-00",
+  "backup_type": "GameChanger_Services",
+  "admin_required": true,
+  "services": {
+    "DiagTrack": {
+      "display_name": "Connected User Experiences and Telemetry",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telemetry & Diagnostics"
+    },
+    "DPS": {
+      "display_name": "Diagnostic Policy Service",
+      "startup_type": "Manual",
+      "state": "Stopped",
+      "category": "SafeToDisable", 
+      "group": "Telemetry & Diagnostics"
+    },
+    "WdiServiceHost": {
+      "display_name": "Diagnostic Service Host",
+      "startup_type": "Manual",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telemetry & Diagnostics"
+    },
+    "Spooler": {
+      "display_name": "Print Spooler",
+      "startup_type": "Automatic",
+      "state": "Running",
+      "category": "OptionalToDisable",
+      "group": "Printer Services"
+    },
+    "AudioSrv": {
+      "display_name": "Windows Audio",
+      "startup_type": "Automatic",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Audio Services"
+    }
+  }
+}

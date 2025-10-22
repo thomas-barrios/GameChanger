@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['..\\src\\game_changer.py'],
+    ['src\\game_changer.py'],
     pathex=[],
     binaries=[],
     datas=[],

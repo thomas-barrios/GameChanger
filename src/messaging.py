@@ -23,6 +23,20 @@ class FileOperation:
     error_message: Optional[str] = None
 
 
+@dataclass
+class ServiceOperation:
+    """Represents a single service state change operation"""
+    service_name: str
+    display_name: str
+    current_startup_type: str
+    target_startup_type: str
+    category: str  # SafeToDisable, OptionalToDisable, DoNotDisable
+    gaming_rationale: str  # Why this matters for gaming performance
+    success: bool = False
+    error_type: Optional[str] = None
+    error_message: Optional[str] = None
+
+
 @dataclass 
 class SectionStats:
     """Statistics for a config section"""
@@ -31,6 +45,16 @@ class SectionStats:
     files_ok: int = 0
     files_error: int = 0
     operations: List[FileOperation] = field(default_factory=list)
+
+
+@dataclass 
+class ServiceSectionStats:
+    """Statistics for a service category section"""
+    name: str
+    category: str
+    services_ok: int = 0
+    services_error: int = 0
+    operations: List[ServiceOperation] = field(default_factory=list)
 
 
 class ErrorTracker:
@@ -209,6 +233,137 @@ class MessageFormatter:
         return lines
 
 
+class ServiceMessageFormatter:
+    """Specialized formatting for Windows services operations"""
+    
+    def __init__(self, operation_type: str = "SERVICES_SCAN"):
+        self.operation_type = operation_type.upper()
+        self.service_sections: Dict[str, ServiceSectionStats] = {}
+        self.error_tracker = ErrorTracker()
+        
+    def add_service_section(self, section_name: str, category: str):
+        """Add a new service category section"""
+        self.service_sections[section_name] = ServiceSectionStats(
+            name=section_name,
+            category=category
+        )
+    
+    def add_service_operation(self, operation: ServiceOperation):
+        """Add a service operation to the appropriate category section"""
+        section_name = operation.category
+        if section_name not in self.service_sections:
+            self.add_service_section(section_name, operation.category)
+        
+        section_stats = self.service_sections[section_name]
+        section_stats.operations.append(operation)
+        
+        if operation.success:
+            section_stats.services_ok += 1
+        else:
+            section_stats.services_error += 1
+            if operation.error_type:
+                self.error_tracker.add_error(
+                    operation.error_type, 
+                    operation.service_name,
+                    operation.category
+                )
+    
+    def format_service_scan_output(self) -> str:
+        """Generate formatted output for service scan results"""
+        lines = []
+        lines.append(f"=== WINDOWS SERVICES SCAN ===")
+        lines.append("")
+        
+        # Process each category in specific order
+        category_order = ["DoNotDisable", "SafeToDisable", "OptionalToDisable"]
+        
+        for category in category_order:
+            if category not in self.service_sections:
+                continue
+                
+            stats = self.service_sections[category]
+            if not stats.operations:
+                continue
+            
+            # Category header with description
+            category_descriptions = {
+                "DoNotDisable": "Essential services - NEVER modify these",
+                "SafeToDisable": "Safe to disable - No impact on gaming",
+                "OptionalToDisable": "Optional - May improve performance (user choice)"
+            }
+            
+            lines.append(f"[{category}] - {category_descriptions.get(category, '')}")
+            lines.append("─" * 60)
+            
+            for i, op in enumerate(stats.operations):
+                is_last = (i == len(stats.operations) - 1)
+                prefix = "└─" if is_last else "├─"
+                
+                # Format: Service Name (Current: Status) - Gaming Impact
+                status_info = f"Current: {op.current_startup_type}"
+                lines.append(f"{prefix} {op.display_name} ({status_info})")
+                lines.append(f"   └─ Impact: {op.gaming_rationale}")
+            
+            lines.append("")  # Empty line between categories
+        
+        return "\n".join(lines)
+    
+    def format_service_optimization_output(self) -> str:
+        """Generate formatted output for service optimization results"""
+        lines = []
+        lines.append(f"=== SERVICES OPTIMIZATION RESULTS ===")
+        
+        # Process each category
+        for category_name, stats in self.service_sections.items():
+            if not stats.operations or category_name == "DoNotDisable":
+                continue
+                
+            lines.append(f"[{category_name}]")
+            
+            for i, op in enumerate(stats.operations):
+                is_last = (i == len(stats.operations) - 1)
+                prefix = "└─" if is_last else "├─"
+                
+                if op.success:
+                    lines.append(f"{prefix} OK: {op.display_name} ({op.current_startup_type} → {op.target_startup_type})")
+                else:
+                    error_msg = f" ({op.error_message})" if op.error_message else ""
+                    lines.append(f"{prefix} ERROR: {op.display_name}{error_msg}")
+            
+            lines.append("")
+        
+        # Add summary
+        lines.extend(self._format_service_summary())
+        
+        return "\n".join(lines)
+    
+    def _format_service_summary(self) -> List[str]:
+        """Generate service operation summary"""
+        lines = []
+        
+        total_ok = sum(s.services_ok for s in self.service_sections.values())
+        total_errors = sum(s.services_error for s in self.service_sections.values())
+        total_services = total_ok + total_errors
+        
+        lines.append(f"=== SERVICES SUMMARY ===")
+        lines.append(f"Services processed: {total_ok}/{total_services} successful ({total_errors} errors)")
+        
+        # Add error breakdown if there are errors
+        if total_errors > 0:
+            lines.append("")
+            lines.append("ERROR BREAKDOWN:")
+            
+            error_summary = self.error_tracker.get_error_summary()
+            for error_type, service_list in error_summary.items():
+                count = len(service_list)
+                lines.append(f"{error_type}: {count} service{'s' if count != 1 else ''}")
+                
+                for service_name in service_list:
+                    lines.append(f"  - {service_name}")
+        
+        return lines
+
+
 class OutputManager:
     """Manage dual output formatting - console vs log"""
     
@@ -321,5 +476,144 @@ class OutputManager:
                 self.logger.warning(f"{error_type}: {len(file_list)} occurrences")
                 for file_path in file_list:
                     self.logger.warning(f"  -> {file_path}")
+        
+        self.logger.info(f"=== END {self.formatter.operation_type} TECHNICAL LOG ===")
+
+
+class ServiceOutputManager:
+    """Specialized output manager for Windows services operations"""
+    
+    def __init__(self, logger: logging.Logger, operation_type: str = "SERVICES_SCAN"):
+        self.logger = logger
+        self.formatter = ServiceMessageFormatter(operation_type)
+        self.start_time = None
+        
+    def start_operation(self):
+        """Mark operation start"""
+        import time
+        self.start_time = time.time()
+        
+    def add_service_section(self, section_name: str, category: str):
+        """Add a service category section"""
+        self.formatter.add_service_section(section_name, category)
+        
+    def add_service_operation(self, service_name: str, display_name: str, current_startup: str,
+                             target_startup: str, category: str, gaming_rationale: str,
+                             success: bool, error_type: str = None, error_message: str = None):
+        """Add a service operation"""
+        operation = ServiceOperation(
+            service_name=service_name,
+            display_name=display_name,
+            current_startup_type=current_startup,
+            target_startup_type=target_startup,
+            category=category,
+            gaming_rationale=gaming_rationale,
+            success=success,
+            error_type=error_type,
+            error_message=error_message
+        )
+        
+        self.formatter.add_service_operation(operation)
+        
+    def finalize_scan_operation(self, log_file_path: Path = None):
+        """Complete service scan and output results"""
+        import time
+        
+        # Calculate duration
+        duration = time.time() - self.start_time if self.start_time else 0
+        
+        # CONSOLE OUTPUT: Service scan results
+        console_output = self.formatter.format_service_scan_output()
+        print(console_output)
+        
+        # Add duration and log info
+        if duration > 0:
+            print(f"Scan duration: {duration:.1f} seconds")
+        if log_file_path:
+            print(f"Log file: {log_file_path}")
+        print("=" * 60)
+        
+        # LOG FILE OUTPUT: Technical details
+        self._log_service_technical_details()
+        
+        if duration > 0:
+            self.logger.info(f"Service scan completed in {duration:.2f} seconds")
+    
+    def finalize_optimization_operation(self, log_file_path: Path = None):
+        """Complete service optimization and output results"""
+        import time
+        
+        # Calculate duration
+        duration = time.time() - self.start_time if self.start_time else 0
+        
+        # CONSOLE OUTPUT: Optimization results
+        console_output = self.formatter.format_service_optimization_output()
+        print(console_output)
+        
+        # Add important notices
+        print("\n" + "=" * 60)
+        print("IMPORTANT NOTICES:")
+        print("• A system restart is recommended for all changes to take effect")
+        print("• Service states have been backed up to the backup folder")
+        print("• Use 'services restore' command to revert changes if needed")
+        print("=" * 60)
+        
+        # Add duration and log info
+        if duration > 0:
+            print(f"Optimization duration: {duration:.1f} seconds")
+        if log_file_path:
+            print(f"Log file: {log_file_path}")
+        print("=" * 60)
+        
+        # LOG FILE OUTPUT: Technical details
+        self._log_service_technical_details()
+        
+        if duration > 0:
+            self.logger.info(f"Service optimization completed in {duration:.2f} seconds")
+    
+    def _log_service_technical_details(self):
+        """Log detailed service operation information"""
+        import time
+        
+        self.logger.info(f"=== {self.formatter.operation_type} TECHNICAL LOG ===")
+        self.logger.info(f"Operation timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        total_sections = len(self.formatter.service_sections)
+        total_operations = sum(len(stats.operations) for stats in self.formatter.service_sections.values())
+        self.logger.info(f"Processing {total_operations} service operations across {total_sections} categories")
+        
+        # Log each service operation with full details
+        for category_name, stats in self.formatter.service_sections.items():
+            if not stats.operations:
+                continue
+                
+            self.logger.info(f"--- Category: {category_name} ---")
+            self.logger.info(f"Services in category: {len(stats.operations)} (Success: {stats.services_ok}, Errors: {stats.services_error})")
+            
+            for op in stats.operations:
+                if op.success:
+                    self.logger.info(f"SUCCESS: '{op.service_name}' ({op.display_name}) | {op.current_startup_type} -> {op.target_startup_type} | Rationale: {op.gaming_rationale}")
+                else:
+                    self.logger.error(f"FAILED: '{op.service_name}' ({op.display_name}) | Error: {op.error_type} | Details: {op.error_message or 'No additional details'}")
+        
+        # Log final statistics
+        total_ok = sum(s.services_ok for s in self.formatter.service_sections.values())
+        total_errors = sum(s.services_error for s in self.formatter.service_sections.values())
+        success_rate = (total_ok / (total_ok + total_errors) * 100) if (total_ok + total_errors) > 0 else 0
+        
+        self.logger.info(f"=== SERVICE OPERATION STATISTICS ===")
+        self.logger.info(f"Total services processed: {total_ok + total_errors}")
+        self.logger.info(f"Successful operations: {total_ok}")
+        self.logger.info(f"Failed operations: {total_errors}")
+        self.logger.info(f"Success rate: {success_rate:.1f}%")
+        
+        # Log detailed error analysis
+        if total_errors > 0:
+            self.logger.info("=== SERVICE ERROR ANALYSIS ===")
+            error_summary = self.formatter.error_tracker.get_error_summary()
+            for error_type, service_list in error_summary.items():
+                self.logger.warning(f"{error_type}: {len(service_list)} occurrences")
+                for service_name in service_list:
+                    self.logger.warning(f"  -> {service_name}")
         
         self.logger.info(f"=== END {self.formatter.operation_type} TECHNICAL LOG ===")

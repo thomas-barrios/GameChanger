@@ -1,0 +1,230 @@
+----------------------------------------------------------------
+You are a very experienced developer with 30 years of experienced, your code is efficient, short and very readable, including comments and optimizations.
+
+You have profound knowledge of DCS both as user and developer, that allows you to optimize hardware, software to the upper most limits.
+
+You are constantly testing and optimizing your DCS setup, focusing on performance (lowest frame times) and stability (no stutters) to participate in virtual combat championships like TACT, SATAL, and training on servers link JustDogFights. Currently you are member of HARPIA a DCS competitive team with 3 global championships victories.
+
+Recently you develop a way of backup of DCS configurations, by coping and storing specifc configuration folders and files.
+
+Now you are thinking in go further.
+
+Create a new application, with the following funcions:
+
+DCS optimizer, or "Game Changer" (temporary name)
+
+Config
+- Log configuration 
+	Monitor changes in settings of: DCS, VR Headset, Nvidia Control Panel, Windows SO, Olher softwares like PimaXR, and Quadviews Foveated.
+- Compare
+	Compare changes from one point in time to anoter, displaying what was changed.
+- Performance
+	Display changes in DCS performance preseting a corelation between config changes and performance.
+- Backup changes
+	Store files and folders containing settings preserved for future analysis or restoration.
+- Restore
+	Restoration od the system to prior states quick and easely.
+
+Manage
+- Keybinds
+	Import backup Keybinds and 
+- Presets
+	Store and aplies config presets including not only DCS settings, but also preset settings for: VR Headsets, Graphic Cards, Nvida Control Panel, and SOs configs
+- Skins
+	Imports and exports skins online with easy, sharing them with other users
+
+Ranking
+- Performance
+	Capture, anlyse and compare DCS performance across multiple users, hardware, and configs, allowing a broad view  of impact on performance and best praticies.
+- Hardware
+	Capture, anlyse and compare DCS performance across multiple hardwares like CPUs, GPUs, MOtherboards, Disks, and memories, allowing a broad view on hardware impact on performance and best praticies.
+- Players
+	Capture and compare players performance based on info gathered from gaming sessions, like logs, tacview, etc. Ranking them among other players
+
+Software caracteristics
+- inspiration: DCS Setup spreadsheet, CapFrameX, DCS-Keybinds-Manage, TacView
+- not to be afiliated with eagle dynamics
+- future expand to other games not only DCS
+- free and open source
+- easy of development
+- to be developed initialy by a team of one person
+- prototype only, no advanced features
+- prioritize Config funcions for initial development
+- to be monetized in the future: sponsorship, ads, hosting, expansion to other games.
+
+
+Analyse this software development project, consider the following:
+- what is the best archeteture to build?
+- what should be the roadmap of development?
+- what technical strategies could be implemented to prototype first, develop latter?
+- is there any other softwares for inspiration?
+- is ther any other competitor softwares?
+
+Do not build any code, just analyse, ponderate and ask for feedback.
+
+----------------------------------------------------------------
+Nex step: create an .exe file
+evaluate all code, the .exe file must attend the following premises:
+- single .exe
+- named game-changer.exe
+- operated thru parameters like: 
+	-execute:backup, or 
+	--execute restore --backup-folder "D:\GameChanger\Backup\2025-10-21-16-54-17-Backup" or
+	--schedulle:atlogon or
+	--schedulle:dailly
+do not change any code, just analyse, consider and ask for feedback
+
+----------------------------------------------------------------
+Next we will include a restore-this-backup.bat in when a backup is created
+
+Evaluate all code, the and the following premises:
+- consider what shuold be th restore-this-backup.bat file name. what is the best pratice?
+- should be presented to user the restoration status after running a restoration
+
+Do not change any code, just analyse, consider and ask for feedback.
+
+
+----------------------------------------------------------------
+Next we will merge config.txt and backup_files.txt in a single file
+
+Evaluate all code, the and the following premises:
+- consider what shuold be this file name. config.txt? config.cfg? options.txt? what is the best pratice?
+- this file will receive all configurations and defaults
+- we will shortly add windoes services that could be optmized in this file too
+- keep the file lean, but readble, self explanatory by design
+
+Do not change any code, just analyse, consider and ask for feedback.
+
+
+----------------------------------------------------------------
+Next we will inproove the way the bakcup / restoration messaging is presented to the user and logged
+
+Evaluate all code, the and the following premises:
+- message display includes full path from original and backuped or restored files, this is large and difficult to read
+- a message lean with repetitive information sanitized should be presented, whitout removing the sense of message
+- consider options to present the messages in multiple ways so i can decide
+- tis standard will be used in all messaging in the project
+
+Do not change any code, just analyse, consider and ask for feedback.
+
+
+
+
+
+----------------------------------------------------------------
+Next we will incorporate the windows services optimization functionality. The attached scripts disables selected services for a specific machine. We will incoporate similar function.
+
+Evaluate all code, the .exe file must attend the following premises:
+
+- services must be scanned on the machine
+- curent service status should be presented to the user
+- a sumary and a selection from OptionalToDisble must be presented to user
+- no change prior user confirmation
+- service state should be backuped at backup_folder prior to changes
+- restoration of services to a specifi service state backup shoulde be like resotration of config files
+
+
+SafeToDisable
+Services irelevant that are tottaly safe to sisable
+Examples
+Group,Service,Internal Name,What it does,Reason for Disabling
+# Telemetry & Diagnostics,Connected User Experiences and Telemetry,DiagTrack,Collects usage data for Microsoft,No impact on gaming; reduces CPU/network overhead
+# Telemetry & Diagnostics,Diagnostic Policy Service,DPS,Problem detection & troubleshooting,Resource-intensive scanning during gameplay
+# Telemetry & Diagnostics,Diagnostic Service Host,WdiServiceHost,Hosts diagnostics,Background diagnostics cause micro-stutters
+# Telemetry & Diagnostics,Diagnostic System Host,WdiSystemHost,System diagnostics,Unnecessary CPU overhead during gaming
+# Cloud & Microsoft Services,WalletService,WalletService,Payment/wallet management,Irrelevant for gaming
+# Cloud & Microsoft Services,AssignedAccessManager Service,AssignedAccessManagerSvc,Kiosk mode support,"Enterprise feature, not needed"
+# Fax & Legacy,Fax,Fax,Fax services,"Obsolete, never used in gaming"
+# Media & Entertainment,Downloaded Maps Manager,MapsBroker,Offline maps,Irrelevant for desktop gaming
+# Hardware Support,Realtek Audio Universal Service,RtkUWPService,Realtek audio management,Can conflict with gaming audio stack
+# Hardware Support,Tobii VR4PIMAXP3B Platform Runtime,TobiiVRService,Tobii eye tracking,Not used with Pimax VR
+# Remote Access,Remote Registry,RemoteRegistry,Remote registry editing,Security risk; unnecessary for local gaming
+# Remote Access,Remote Desktop Services,TermService,RDP connections,Unneeded for local gaming
+# Backup & Sync,File History Service,fhsvc,File backup,Heavy disk I/O during gameplay
+# Backup & Sync,Work Folders,WorkFolders,Enterprise file sync,Unused; removes sync timers
+# Network Discovery,SSDP Discovery,SSDPSRV,UPnP/SSDP discovery,Cuts broadcast traffic & wakeups
+# Network Discovery,UPnP Device Host,UPnPHost,Hosts UPnP devices,No UPnP device hosting needed
+# Network Discovery,Function Discovery Provider Host,FDResPub,Network discovery providers,No network device discovery required
+# Network Discovery,Function Discovery Resource Publication,FDResPub,Publishes PC on network,No need to advertise this PC
+# Location & Sensors,Geolocation Service,lfsvc,Location & geofences,Not used; avoids periodic checks
+# Location & Sensors,Sensor Service,SensorService,Manages sensors,Desktops lack sensors; removes polling
+# Location & Sensors,Sensor Monitoring Service,SensrSvc,Monitors sensors,Unnecessary for gaming desktop
+# Location & Sensors,Sensor Data Service,SensorDataService,Delivers sensor data,No sensors used in setup
+# Xbox Services,Xbox Live Auth Manager,XblAuthManager,Xbox Live authentication,Not used by DCS
+# Xbox Services,Xbox Live Game Save,XblGameSave,Cloud saves sync,DCS doesn’t use Xbox Live
+# Xbox Services,Xbox Live Networking Service,XboxNetApiSvc,Xbox networking API,Unused; reduces network services
+# Xbox Services,Xbox Accessory Management Service,XboxGipSvc,Manages Xbox accessories,Unused; no Xbox controllers
+# Telephony,Phone Service,PhoneSvc,Telephony state management,Desktop without telephony
+# Telephony,MessagingService_50b27,MessagingService_50b27,Text messaging support,Not used in gaming setup
+# Insider Program,Windows Insider Service,wisvc,Windows Insider Program support,Not needed for stable gaming rig
+# WebDAV,WebClient,WebClient,WebDAV filesystem,Avoids WebDAV reconnects
+# Imaging,Windows Image Acquisition (WIA),stisvc,Scanner/camera acquisition,No scanning/capturing needed
+# Third-Party,Google Updater Service,GoogleUpdaterService142.0.7416.0,Google software updates,Not needed for gaming
+# Third-Party,Google Updater Internal Service,GoogleUpdaterInternalService142.0.7416.0,Google software updates,Not needed for gaming
+# Third-Party,AsusUpdateCheck,AsusUpdateCheck,ASUS update service,Manual updates sufficient
+# File Tracking,Distributed Link Tracking Client,TrkWks,Maintains NTFS links,No benefit for single-user gaming PC
+# Retail Demo,Retail Demo Service,RetailDemo,Retail demo behaviors,Consumer feature; unnecessary
+
+OptionalToDisble
+Services that have known impact on performance, but could be usefull to some users
+Examples
+# Power Management,Power,power,Manages power policies,Known to cause stutters in VR setups
+# Windows Updates,Update Orchestrator Service,UsoSvc,Manages Windows Updates,Background updates hurt network/CPU during gameplay
+# Windows Updates,Windows Modules Installer,TrustedInstaller,Installs Windows updates,"Can trigger during gameplay, causing stutters"
+# Windows Updates,WaaSMedicSvc,WaaSMedicSvc,Windows Update repair service,Redundant for gaming sessions
+# Cloud & Microsoft Services,Microsoft Account Sign-in Assistant,wlidsvc,Microsoft account authentication,Local account used; unnecessary cloud sync
+# Printer Services,Print Spooler,Spooler,Print job spooling,No printing needed
+# Printer Services,Printer Extensions and Notifications,PrintNotify,Printer dialogs,Unnecessary overhead
+# Printer Services,PrintWorkflow_50b27,PrintWorkflowUserSvc_50b27,Print workflow support,Not needed for gaming
+# Search & Indexing,Windows Search,WSearch,File indexing,Heavy disk I/O competes with DCS loading
+# Media & Entertainment,GameDVR and Broadcast User Service_50b27,BcastDVRUserService_50b27,Game capture/broadcast,Causes frame drops and input lag in VR
+# Hardware Support,AMD 3D V-Cache Performance Optimizer Service,AmdPmuService,AMD thread optimization,DCS uses own optimization
+# Hardware Support,AMD Application Compatibility Database Service,AmdAcpSvc,AMD compatibility database,Not needed for DCS
+# Hardware Support,AMD Provisioning Packages Service,AmdPPService,AMD power management,DCS manual settings better
+# Parental Controls,Parental Controls,WPCSvc,Family safety,Not needed for competitive gaming
+
+DoNotDisable
+essetial SO or software related services
+Examples
+Group,Service,Internal Name,What it does,Reason for Keeping
+# General System Services,DCOM Server Process Launcher,DCOMLaunch,COM/DCOM server launcher,CRITICAL: DCS crashes without it
+# General System Services,Remote Procedure Call (RPC),RpcSs,RPC communication,CORE SYSTEM: Everything fails without it
+# General System Services,Plug and Play,PlugPlay,Hardware detection,REQUIRED: WinWing joysticks and Pimax VR
+# General System Services,Windows Management Instrumentation,Winmgmt,System monitoring,REQUIRED: DCS telemetry and system stability
+# General System Services,Application Information,Appinfo,Admin privileges for apps,REQUIRED: DCS may run in admin mode
+# General System Services,User Profile Service,ProfSvc,Loads/unloads user profiles,REQUIRED: User login stability
+# General System Services,Local Session Manager,LSM,Manages user sessions,CORE SYSTEM: System instability if disabled
+# General System Services,System Event Notification Service,SENS,Monitors system events,REQUIRED: COM+ event handling for DCS
+# General System Services,Task Scheduler,Schedule,Schedules automated tasks,REQUIRED: System-critical tasks
+# General System Services,Security Accounts Manager,SamSs,Manages security accounts,CORE SYSTEM: Login and security
+# Network Services,DHCP Client,Dhcp,Assigns IP addresses,CRITICAL: Online multiplayer
+# Network Services,DNS Client,Dnscache,Resolves DNS queries,CRITICAL: Online multiplayer
+# Network Services,Network List Service,netprofm,Identifies network connections,REQUIRED: WiFi/Ethernet stability
+# Network Services,Network Location Awareness,NlaSvc,Collects network configuration,REQUIRED: Network connectivity
+# Network Services,Network Store Interface Service,nsi,Delivers network notifications,REQUIRED: Network connectivity
+# Network Services,WLAN AutoConfig,Wlansvc,Configures WiFi connections,CRITICAL: WiFi for multiplayer
+# Network Services,WinHTTP Web Proxy Auto-Discovery Service,WinHttpAutoProxySvc,Proxy discovery,REQUIRED: Network connectivity
+# Network Services,Network Connection Broker,NcbService,Brokers app network connections,REQUIRED: DCS network stability
+# Graphics & Display,Display Policy Service,DispSvc,Manages display configurations,REQUIRED: Pimax VR multi-monitor
+# Graphics & Display,Shell Hardware Detection,ShellHWDetection,USB and hardware event detection,REQUIRED: WinWing joysticks and VR
+# Audio Services,Windows Audio,AudioSrv,Manages audio,REQUIRED: VR headset audio
+# Audio Services,Windows Audio Endpoint Builder,AudioEndpointBuilder,Manages audio devices,REQUIRED: Audio stability
+# USB & Device Services,Human Interface Device Service,hidserv,Supports HID devices,REQUIRED: WinWing joysticks
+# USB & Device Services,Device Association Service,DeviceAssociationService,Device pairing,REQUIRED: USB devices and VR
+# USB & Device Services,Device Install Service,DeviceInstall,Installs device drivers,REQUIRED: Joystick/VR driver stability
+# Time & Sync,Windows Time,W32Time,Time synchronization,REQUIRED: Multiplayer server sync
+# Security,Windows Defender Antivirus Service,WinDefend,Malware protection,SECURITY: Essential for system safety
+# Security,Windows Defender Firewall,MpsSvc,Firewall protection,SECURITY: Network security for multiplayer
+# Microsoft Store,Client License Service,ClipSVC,Microsoft Store licensing,REQUIRED: User confirmed Store app usage
+
+Do not change any code, just analyse, consider and ask for feedback
+
+
+----------------------------------------------------------------
+Next we will:  
+
+Evaluate all code, the and the following premises:
+- 
+
+Do not change any code, just analyse, consider and ask for feedback.
+

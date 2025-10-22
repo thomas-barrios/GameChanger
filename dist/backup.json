@@ -1,0 +1,469 @@
+{
+  "backup_timestamp": "2025-10-22_17-43-39",
+  "backup_type": "GameChanger_Services",
+  "admin_required": true,
+  "services": {
+    "DiagTrack": {
+      "display_name": "Connected User Experiences and Telemetry",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telemetry & Diagnostics"
+    },
+    "DPS": {
+      "display_name": "Diagnostic Policy Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telemetry & Diagnostics"
+    },
+    "WdiServiceHost": {
+      "display_name": "Diagnostic Service Host",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telemetry & Diagnostics"
+    },
+    "WdiSystemHost": {
+      "display_name": "Diagnostic System Host",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telemetry & Diagnostics"
+    },
+    "WalletService": {
+      "display_name": "WalletService",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Cloud & Microsoft Services"
+    },
+    "AssignedAccessManagerSvc": {
+      "display_name": "AssignedAccessManager Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Cloud & Microsoft Services"
+    },
+    "MapsBroker": {
+      "display_name": "Downloaded Maps Manager",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Media & Entertainment"
+    },
+    "RemoteRegistry": {
+      "display_name": "Remote Registry",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Remote Access"
+    },
+    "TermService": {
+      "display_name": "Remote Desktop Services",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Remote Access"
+    },
+    "fhsvc": {
+      "display_name": "File History Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Backup & Sync"
+    },
+    "SSDPSRV": {
+      "display_name": "SSDP Discovery",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Network Discovery"
+    },
+    "UPnPHost": {
+      "display_name": "UPnP Device Host",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Network Discovery"
+    },
+    "FDResPub": {
+      "display_name": "Function Discovery Provider Host",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Network Discovery"
+    },
+    "lfsvc": {
+      "display_name": "Geolocation Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Location & Sensors"
+    },
+    "SensorService": {
+      "display_name": "Sensor Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Location & Sensors"
+    },
+    "SensrSvc": {
+      "display_name": "Sensor Monitoring Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Location & Sensors"
+    },
+    "SensorDataService": {
+      "display_name": "Sensor Data Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Location & Sensors"
+    },
+    "XblAuthManager": {
+      "display_name": "Xbox Live Auth Manager",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Xbox Services"
+    },
+    "XblGameSave": {
+      "display_name": "Xbox Live Game Save",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Xbox Services"
+    },
+    "XboxNetApiSvc": {
+      "display_name": "Xbox Live Networking Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Xbox Services"
+    },
+    "XboxGipSvc": {
+      "display_name": "Xbox Accessory Management Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Xbox Services"
+    },
+    "PhoneSvc": {
+      "display_name": "Phone Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Telephony"
+    },
+    "wisvc": {
+      "display_name": "Windows Insider Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Insider Program"
+    },
+    "WebClient": {
+      "display_name": "WebClient",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "WebDAV"
+    },
+    "stisvc": {
+      "display_name": "Windows Image Acquisition (WIA)",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Imaging"
+    },
+    "GoogleUpdaterService142.0.7416.0": {
+      "display_name": "Google Updater Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Third-Party"
+    },
+    "GoogleUpdaterInternalService142.0.7416.0": {
+      "display_name": "Google Updater Internal Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Third-Party"
+    },
+    "AsusUpdateCheck": {
+      "display_name": "AsusUpdateCheck",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Third-Party"
+    },
+    "TrkWks": {
+      "display_name": "Distributed Link Tracking Client",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "File Tracking"
+    },
+    "RetailDemo": {
+      "display_name": "Retail Demo Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "SafeToDisable",
+      "group": "Retail Demo"
+    },
+    "power": {
+      "display_name": "Power",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Power Management"
+    },
+    "UsoSvc": {
+      "display_name": "Update Orchestrator Service",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Windows Updates"
+    },
+    "TrustedInstaller": {
+      "display_name": "Windows Modules Installer",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Windows Updates"
+    },
+    "WaaSMedicSvc": {
+      "display_name": "WaaSMedicSvc",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Windows Updates"
+    },
+    "wlidsvc": {
+      "display_name": "Microsoft Account Sign-in Assistant",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Cloud & Microsoft Services"
+    },
+    "Spooler": {
+      "display_name": "Print Spooler",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Printer Services"
+    },
+    "PrintNotify": {
+      "display_name": "Printer Extensions and Notifications",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Printer Services"
+    },
+    "WSearch": {
+      "display_name": "Windows Search",
+      "startup_type": "Disabled",
+      "state": "Stopped",
+      "category": "OptionalToDisable",
+      "group": "Search & Indexing"
+    },
+    "DCOMLaunch": {
+      "display_name": "DCOM Server Process Launcher",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "RpcSs": {
+      "display_name": "Remote Procedure Call (RPC)",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "PlugPlay": {
+      "display_name": "Plug and Play",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "Winmgmt": {
+      "display_name": "Windows Management Instrumentation",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "Appinfo": {
+      "display_name": "Application Information",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "ProfSvc": {
+      "display_name": "User Profile Service",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "LSM": {
+      "display_name": "Local Session Manager",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "SENS": {
+      "display_name": "System Event Notification Service",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "Schedule": {
+      "display_name": "Task Scheduler",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "SamSs": {
+      "display_name": "Security Accounts Manager",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "General System Services"
+    },
+    "Dhcp": {
+      "display_name": "DHCP Client",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "Dnscache": {
+      "display_name": "DNS Client",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "netprofm": {
+      "display_name": "Network List Service",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "NlaSvc": {
+      "display_name": "Network Location Awareness",
+      "startup_type": "Manual",
+      "state": "Stopped",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "nsi": {
+      "display_name": "Network Store Interface Service",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "Wlansvc": {
+      "display_name": "WLAN AutoConfig",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "WinHttpAutoProxySvc": {
+      "display_name": "WinHTTP Web Proxy Auto-Discovery Service",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "NcbService": {
+      "display_name": "Network Connection Broker",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Network Services"
+    },
+    "ShellHWDetection": {
+      "display_name": "Shell Hardware Detection",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Graphics & Display"
+    },
+    "AudioSrv": {
+      "display_name": "Windows Audio",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Audio Services"
+    },
+    "AudioEndpointBuilder": {
+      "display_name": "Windows Audio Endpoint Builder",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Audio Services"
+    },
+    "hidserv": {
+      "display_name": "Human Interface Device Service",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "USB & Device Services"
+    },
+    "DeviceAssociationService": {
+      "display_name": "Device Association Service",
+      "startup_type": "Manual",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "USB & Device Services"
+    },
+    "DeviceInstall": {
+      "display_name": "Device Install Service",
+      "startup_type": "Manual",
+      "state": "Stopped",
+      "category": "DoNotDisable",
+      "group": "USB & Device Services"
+    },
+    "W32Time": {
+      "display_name": "Windows Time",
+      "startup_type": "Manual",
+      "state": "Stopped",
+      "category": "DoNotDisable",
+      "group": "Time & Sync"
+    },
+    "WinDefend": {
+      "display_name": "Windows Defender Antivirus Service",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Security"
+    },
+    "MpsSvc": {
+      "display_name": "Windows Defender Firewall",
+      "startup_type": "Auto",
+      "state": "Running",
+      "category": "DoNotDisable",
+      "group": "Security"
+    },
+    "ClipSVC": {
+      "display_name": "Client License Service",
+      "startup_type": "Manual",
+      "state": "Stopped",
+      "category": "DoNotDisable",
+      "group": "Microsoft Store"
+    }
+  }
+}

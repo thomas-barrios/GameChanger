@@ -181,30 +181,6 @@ class MessageFormatter:
         
         return "\n".join(lines)
     
-    def format_log_output(self, logger: logging.Logger):
-        """Generate detailed log output"""
-        logger.info(f"=== {self.operation_type} STARTED ===")
-        
-        for section_name, stats in self.sections.items():
-            if not stats.operations:
-                continue
-                
-            logger.info(f"Processing section [{section_name}] - {len(stats.operations)} files")
-            logger.info(f"Base path: {stats.base_path}")
-            
-            for op in stats.operations:
-                if op.success:
-                    logger.info(f"OK: {op.relative_path} -> {op.dest_path}")
-                else:
-                    error_detail = f" -> {op.error_message}" if op.error_message else ""
-                    logger.error(f"ERROR: {op.relative_path} ({op.error_type}){error_detail}")
-        
-        # Log summary
-        total_ok = sum(s.files_ok for s in self.sections.values())
-        total_errors = sum(s.files_error for s in self.sections.values())
-        logger.info(f"=== {self.operation_type} SUMMARY ===")
-        logger.info(f"Files processed: {total_ok}/{total_ok + total_errors} successful ({total_errors} errors)")
-    
     def _format_summary(self) -> List[str]:
         """Generate summary section"""
         lines = []
@@ -279,19 +255,71 @@ class OutputManager:
         # Calculate duration
         duration = time.time() - self.start_time if self.start_time else 0
         
-        # Output to console
+        # CONSOLE OUTPUT: Clean tree view for user
         console_output = self.formatter.format_console_output()
         print(console_output)
         
-        # Add duration and log file info
+        # Add duration and log file info to console
         if duration > 0:
             print(f"Duration: {duration:.1f} seconds")
         if log_file_path:
             print(f"Log file: {log_file_path}")
         print("=" * 50)
         
-        # Output to log file
-        self.formatter.format_log_output(self.logger)
+        # LOG FILE OUTPUT: Detailed technical logging (different from console)
+        self._log_technical_details()
         
+        # Log duration to file
         if duration > 0:
-            self.logger.info(f"Duration: {duration:.1f} seconds")
+            self.logger.info(f"Operation completed in {duration:.2f} seconds")
+    
+    def _log_technical_details(self):
+        """Log detailed technical information to file (different from console)"""
+        import time
+        
+        # Log detailed operation start with full context
+        self.logger.info(f"=== {self.formatter.operation_type} TECHNICAL LOG ===")
+        self.logger.info(f"Operation timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        total_sections = len(self.formatter.sections)
+        total_operations = sum(len(stats.operations) for stats in self.formatter.sections.values())
+        self.logger.info(f"Processing {total_operations} file operations across {total_sections} sections")
+        
+        # Log each file operation with full paths and technical details
+        for section_name, stats in self.formatter.sections.items():
+            if not stats.operations:
+                continue
+                
+            self.logger.info(f"--- Section: {section_name} ---")
+            self.logger.info(f"Base directory: {stats.base_path}")
+            self.logger.info(f"Files in section: {len(stats.operations)} (Success: {stats.files_ok}, Errors: {stats.files_error})")
+            
+            for op in stats.operations:
+                if op.success:
+                    # Log successful operations with full source and destination paths
+                    self.logger.info(f"SUCCESS: '{op.source_path}' -> '{op.dest_path}'")
+                else:
+                    # Log failed operations with full error context
+                    self.logger.error(f"FAILED: '{op.source_path}' | Error: {op.error_type} | Details: {op.error_message or 'No additional details'}")
+        
+        # Log final statistics
+        total_ok = sum(s.files_ok for s in self.formatter.sections.values())
+        total_errors = sum(s.files_error for s in self.formatter.sections.values())
+        success_rate = (total_ok / (total_ok + total_errors) * 100) if (total_ok + total_errors) > 0 else 0
+        
+        self.logger.info(f"=== OPERATION STATISTICS ===")
+        self.logger.info(f"Total files processed: {total_ok + total_errors}")
+        self.logger.info(f"Successful operations: {total_ok}")
+        self.logger.info(f"Failed operations: {total_errors}")
+        self.logger.info(f"Success rate: {success_rate:.1f}%")
+        
+        # Log detailed error analysis if there are errors
+        if total_errors > 0:
+            self.logger.info("=== ERROR ANALYSIS ===")
+            error_summary = self.formatter.error_tracker.get_error_summary()
+            for error_type, file_list in error_summary.items():
+                self.logger.warning(f"{error_type}: {len(file_list)} occurrences")
+                for file_path in file_list:
+                    self.logger.warning(f"  -> {file_path}")
+        
+        self.logger.info(f"=== END {self.formatter.operation_type} TECHNICAL LOG ===")

@@ -33,7 +33,7 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
-    # Setup logging
+    # Setup logging only once at the main entry point
     log_level = logging.DEBUG if args.verbose else logging.INFO
     logger = setup_logging(log_level=log_level)
 
@@ -43,7 +43,8 @@ def main():
         elif args.command == 'restore':
             restore_main(args)
         elif args.command == 'schedule':
-            schedule_backup(args)
+            logger.error("Schedule command not implemented yet")
+            return 1
     except Exception as e:
         logger.error(f"Error: {e}")
         return 1

@@ -14,13 +14,13 @@ except Exception:
     def setup_logging(log_path):
         logging.basicConfig(
             level=logging.INFO,
-            format="%(asctime)s %(levelname)s %(message)s",
+            format="%(asctime)s [%(levelname)s]: %(message)s",
             handlers=[
                 logging.FileHandler(log_path, encoding="utf-8"),
                 logging.StreamHandler()
             ]
         )
-        return logging.getLogger()
+        return logging.getLogger('GameChanger')
     
     # Fallback if messaging module not available
     class OutputManager:
@@ -40,7 +40,7 @@ except Exception:
         def get_section_base_path(section, file_paths):
             return str(Path(file_paths[0]).parent) if file_paths else ""
 
-def load_config(config_path: Path, logger) -> dict:
+def load_config(config_path: Path, logger, log_to_file_only=None) -> dict:
     """Load configuration from config.ini"""
     config = {
         'backup_root': Path(r"D:\GameChanger\Backup"),  # default
@@ -76,7 +76,9 @@ def load_config(config_path: Path, logger) -> dict:
             if 'SavedGamesPath' in paths:
                 config['saved_games_path'] = Path(os.path.expandvars(paths['SavedGamesPath']))
                     
-        logger.info(f"Loaded config from {config_path}")
+        if log_to_file_only:
+            log_to_file_only(f"Loaded config from {config_path}")
+        # No console logging for config loading
     except Exception as e:
         logger.error(f"Error reading config {config_path}: {e}")
     
@@ -150,7 +152,7 @@ if %ERRORLEVEL% NEQ 0 (
         
         batch_file = backup_folder / "RestoreBackup.bat"
         batch_file.write_text(batch_content, encoding='utf-8')
-        logger.info(f"Created restore batch file: {batch_file}")
+        logger.info(f"Created restore batch file: {batch_file}")  # Changed back to info for file logging
         return True
         
     except Exception as e:
@@ -186,7 +188,7 @@ def load_files_from_config(config_path: Path, saved_games_path: Path, logger) ->
                     files_by_section[section_name] = section_files
                     
         total_files = sum(len(files) for files in files_by_section.values())
-        logger.info(f"Loaded {total_files} file paths from {config_path} across {len(files_by_section)} sections")
+        logger.info(f"Loaded {total_files} file paths from {config_path} across {len(files_by_section)} sections")  # Changed back to info for file logging
     except Exception as e:
         logger.error(f"Error reading config file {config_path}: {e}")
     
@@ -202,17 +204,55 @@ def main(args=None):
         args = parser.parse_args()
 
     # Load config
-    config_path = args.config if args.config else Path(__file__).parent / "config.ini"
-    config = load_config(config_path, logging.getLogger())
-
-    # Setup backup folder and logging
+    if args.config:
+        config_path = args.config
+    else:
+        # When running from PyInstaller executable, use executable's directory
+        if hasattr(sys, '_MEIPASS'):  # Running from PyInstaller bundle
+            exe_dir = Path(sys.executable).parent
+        else:
+            # Development mode - use script directory
+            exe_dir = Path(__file__).parent
+        config_path = exe_dir / "config.ini"
+    
+    # Initialize logging first (to avoid duplicate setup)
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     backup_name = f"{timestamp}-{args.name}" if args.name else f"{timestamp}-Backup"
-    backup_folder = config['backup_root'] / backup_name
-    log_file = config['backup_root'] / "_BackupLog.txt"
+    
+    # Create a temp config to get backup root for logging setup
+    temp_config = {'backup_root': Path(r"D:\GameChanger\Backup")}
+    try:
+        if config_path.exists():
+            parser = configparser.ConfigParser(interpolation=None)
+            parser.read(config_path, encoding='utf-8')
+            if parser.has_section('Paths') and 'BackupRoot' in parser['Paths']:
+                temp_config['backup_root'] = Path(os.path.expandvars(parser['Paths']['BackupRoot']))
+    except:
+        pass  # Use default if config reading fails
+    
+    backup_folder = temp_config['backup_root'] / backup_name
+    log_file = temp_config['backup_root'] / "_BackupLog.txt"
 
-    # Initialize logging
+    # Initialize logging (this will add file handler if not already present)
     logger = setup_logging(log_file)
+    
+    # Function to log only to file
+    def log_to_file_only(message):
+        for handler in logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                record = logging.LogRecord(
+                    name=logger.name, level=logging.INFO, pathname="", lineno=0,
+                    msg=message, args=(), exc_info=None
+                )
+                handler.emit(record)
+    
+    # Log backup start (file only)
+    log_to_file_only("=== BACKUP OPERATION STARTED ===")
+    log_to_file_only(f"Backup folder: {backup_folder}")
+    log_to_file_only(f"Config file: {config_path}")
+    
+    # Now load full config with the logger
+    config = load_config(config_path, logger, log_to_file_only)
     
     # Initialize messaging system
     output_mgr = OutputManager(logger, "BACKUP")
@@ -278,6 +318,11 @@ def main(args=None):
     
     if backup_count > 0:
         create_restore_batch(backup_folder, logger)
+    
+    # Log backup completion (file only)
+    log_to_file_only("=== BACKUP OPERATION COMPLETED ===")
+    log_to_file_only(f"Files backed up: {backup_count}")
+    log_to_file_only(f"Log file: {log_file}")
 
     return 0
 

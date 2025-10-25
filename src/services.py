@@ -159,9 +159,8 @@ class ServiceManager:
         try:
             backup_folder.mkdir(parents=True, exist_ok=True)
             
-            # Create backup file with same naming convention as config backup
-            # backup_folder is already: "D:\GameChanger\Backup\2025-10-22-17-18-54-Services-Backup"
-            backup_file_name = f"{backup_folder.name}.json"
+            # Use standardized filename instead of folder name
+            backup_file_name = "services_backup.json"
             backup_file = backup_folder / backup_file_name
             
             # Create timestamp for backup data
@@ -194,7 +193,7 @@ class ServiceManager:
             bat_file = backup_folder / "RestoreBackup.bat"
             
             # Calculate correct relative path to GameChanger.exe from backup folder
-            # backup_folder is like: D:\GameChanger\Backup\2025-10-22-17-43-38-Services-Backup
+            # backup_folder is like: C:\Users\Thomas\Documents\GameChanger\Config-Backups\2025-10-22-17-43-38-Services-Backup
             # GameChanger.exe is at: C:\Projects\GameChanger\dist\GameChanger.exe
             # For now, use absolute path to avoid path issues
             exe_path = Path(sys.executable).parent / "GameChanger.exe" if hasattr(sys, '_MEIPASS') else Path(__file__).parent.parent / "dist" / "GameChanger.exe"
@@ -210,7 +209,7 @@ echo Press Ctrl+C to cancel, or
 pause
 
 echo Restoring services...
-"{exe_path}" services restore --backup-file "%~dp0{backup_file_name}" --force
+"{exe_path}" services restore --backup-file "%~dp0services_backup.json" --force
 
 echo.
 echo Services restoration completed!
@@ -626,7 +625,7 @@ def services_backup_main(args=None):
             backup_folder = args.backup_folder
         else:
             # Read backup root from config.ini (same as backup.py)
-            backup_root = Path(r"D:\GameChanger\Backup")  # default
+            backup_root = Path(r"C:\Users\Thomas\Documents\GameChanger\Config-Backups")  # default
             try:
                 if config_path.exists():
                     parser = configparser.ConfigParser(interpolation=None)
@@ -707,7 +706,7 @@ def services_list_backups_main(args=None):
             config_path = exe_dir / "config.ini"
         
         # Read backup root from config.ini
-        backup_root = Path(r"D:\GameChanger\Backup")  # default
+        backup_root = Path(r"C:\Users\Thomas\Documents\GameChanger\Config-Backups")  # default
         try:
             if config_path.exists():
                 parser = configparser.ConfigParser(interpolation=None)
@@ -730,8 +729,8 @@ def services_list_backups_main(args=None):
         services_backups = []
         for item in backup_root.iterdir():
             if item.is_dir() and "Services-Backup" in item.name:
-                # Look for the JSON backup file
-                json_file = item / f"{item.name}.json"
+                # Look for the JSON backup file with new standardized name
+                json_file = item / "services_backup.json"
                 bat_file = item / "RestoreBackup.bat"
                 if json_file.exists():
                     services_backups.append({
@@ -810,7 +809,7 @@ def services_optimize_main(args=None):
             backup_folder = args.backup_folder
         else:
             # Read backup root from config.ini (same as backup.py)
-            backup_root = Path(r"D:\GameChanger\Backup")  # default
+            backup_root = Path(r"C:\Users\Thomas\Documents\GameChanger\Config-Backups")  # default
             try:
                 if config_path.exists():
                     parser = configparser.ConfigParser(interpolation=None)
@@ -838,7 +837,7 @@ def services_optimize_main(args=None):
                 backup_folder_preview = args.backup_folder
             else:
                 # Calculate the backup path the same way as the real operation
-                backup_root = Path(r"D:\GameChanger\Backup")  # default
+                backup_root = Path(r"C:\Users\Thomas\Documents\GameChanger\Config-Backups")  # default
                 try:
                     if config_path.exists():
                         parser = configparser.ConfigParser(interpolation=None)
@@ -853,7 +852,7 @@ def services_optimize_main(args=None):
                 backup_folder_preview = backup_root / backup_name
             
             print(f"Would create backup in: {backup_folder_preview}")
-            print(f"Backup file: {backup_folder_preview / f'{backup_folder_preview.name}.json'}")
+            print(f"Backup file: {backup_folder_preview / 'services_backup.json'}")
             print(f"Restore script: {backup_folder_preview / 'RestoreBackup.bat'}")
             print("Would modify the following services based on config.ini:")
             

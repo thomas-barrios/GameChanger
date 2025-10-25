@@ -43,11 +43,15 @@ except Exception:
 def load_config(config_path: Path, logger, log_to_file_only=None) -> dict:
     """Load configuration from config.ini"""
     config = {
-        'backup_root': Path(r"D:\GameChanger\Backup"),  # default
+        'backup_root': Path(r"C:\Users\Thomas\Documents\GameChanger\Backups"),  # updated default
         'saved_games_path': Path(rf"D:\Users\{os.environ.get('USERNAME')}\Saved Games"),  # default
-        'max_backups': 10,
-        'compress_backups': False,
-        'log_level': 'INFO'
+        'log_level': 'INFO',
+        # Performance correlation settings
+        'frameview_csv_path': Path(r"C:\Users\Thomas\Documents\GameChanger\FrameView\FrameView_Summary.csv"),
+        'enable_performance_correlation': True,
+        'performance_correlation_window': 15,
+        'require_frameview_data': False,
+        'min_session_duration': 30
     }
     
     if not config_path.exists():
@@ -63,18 +67,41 @@ def load_config(config_path: Path, logger, log_to_file_only=None) -> dict:
             general = parser['General']
             if 'LogLevel' in general:
                 config['log_level'] = general['LogLevel'].upper()
-            if 'MaxBackups' in general:
-                config['max_backups'] = general.getint('MaxBackups')
-            if 'CompressBackups' in general:
-                config['compress_backups'] = general.getboolean('CompressBackups')
         
-        # Load Path settings
+        # Load Path settings with placeholder expansion
         if parser.has_section('Paths'):
             paths = parser['Paths']
-            if 'BackupRoot' in paths:
-                config['backup_root'] = Path(os.path.expandvars(paths['BackupRoot']))
-            if 'SavedGamesPath' in paths:
-                config['saved_games_path'] = Path(os.path.expandvars(paths['SavedGamesPath']))
+            
+            # Handle GameChangerRoot placeholder expansion
+            gamechanger_root = None
+            if 'GameChangerRoot' in paths:
+                gamechanger_root = os.path.expandvars(paths['GameChangerRoot'])
+            
+            # Expand paths with GameChangerRoot substitution
+            for key, value in paths.items():
+                expanded_value = value
+                if gamechanger_root and '{GameChangerRoot}' in value:
+                    expanded_value = value.replace('{GameChangerRoot}', gamechanger_root)
+                expanded_value = os.path.expandvars(expanded_value)
+                
+                if key == 'BackupRoot':
+                    config['backup_root'] = Path(expanded_value)
+                elif key == 'SavedGamesPath':
+                    config['saved_games_path'] = Path(expanded_value)
+                elif key == 'FrameViewCSVPath':
+                    config['frameview_csv_path'] = Path(expanded_value)
+        
+        # Load Performance settings
+        if parser.has_section('Performance'):
+            perf = parser['Performance']
+            if 'EnablePerformanceCorrelation' in perf:
+                config['enable_performance_correlation'] = perf.getboolean('EnablePerformanceCorrelation')
+            if 'PerformanceCorrelationWindow' in perf:
+                config['performance_correlation_window'] = perf.getint('PerformanceCorrelationWindow')
+            if 'RequireFrameViewData' in perf:
+                config['require_frameview_data'] = perf.getboolean('RequireFrameViewData')
+            if 'MinSessionDuration' in perf:
+                config['min_session_duration'] = perf.getint('MinSessionDuration')
                     
         if log_to_file_only:
             log_to_file_only(f"Loaded config from {config_path}")
@@ -220,7 +247,7 @@ def main(args=None):
     backup_name = f"{timestamp}-{args.name}" if args.name else f"{timestamp}-Config-Backup"
     
     # Create a temp config to get backup root for logging setup
-    temp_config = {'backup_root': Path(r"D:\GameChanger\Backup")}
+    temp_config = {'backup_root': Path(r"C:\Users\Thomas\Documents\GameChanger\Config-Backups")}
     try:
         if config_path.exists():
             parser = configparser.ConfigParser(interpolation=None)
@@ -253,6 +280,26 @@ def main(args=None):
     
     # Now load full config with the logger
     config = load_config(config_path, logger, log_to_file_only)
+    
+    # Ensure GameChanger directory structure exists
+    try:
+        from directory_manager import ensure_gamechanger_directories, validate_directory_permissions
+        
+        # Create directories if needed
+        if not ensure_gamechanger_directories(config, logger):
+            logger.error("Failed to create required directories")
+            return 1
+        
+        # Validate permissions for backup directory
+        if not validate_directory_permissions(config['backup_root'], logger):
+            logger.error(f"Insufficient permissions for backup directory: {config['backup_root']}")
+            return 1
+            
+    except ImportError as e:
+        logger.warning(f"Directory management not available: {e}")
+    except Exception as e:
+        logger.error(f"Directory setup failed: {e}")
+        return 1
     
     # Initialize messaging system
     output_mgr = OutputManager(logger, "BACKUP")
@@ -316,8 +363,64 @@ def main(args=None):
     # Finalize messaging and create restore batch if successful
     output_mgr.finalize_operation(log_file)
     
+    # Attempt FrameView performance correlation after successful backup
+    performance_correlation_success = False
     if backup_count > 0:
+        # Import here to avoid circular imports
+        try:
+            from frameview_integration import PerformanceCorrelator, save_performance_data
+            
+            # Attempt performance correlation if enabled
+            if config.get('enable_performance_correlation', True):
+                log_to_file_only("=== FRAMEVIEW CORRELATION STARTED ===")
+                correlator = PerformanceCorrelator(config, logger)
+                performance_data = correlator.correlate_with_frameview(backup_folder)
+                
+                if performance_data:
+                    # Save performance data alongside backup
+                    if save_performance_data(backup_folder, performance_data):
+                        performance_correlation_success = True
+                        session_data = performance_data['frameview_correlation']['session_data']
+                        log_to_file_only(f"Performance correlation successful:")
+                        log_to_file_only(f"  FPS: {session_data['avg_fps']:.1f} avg, {session_data['one_percent_low']:.1f} 1% low")
+                        log_to_file_only(f"  Session: {session_data['session_duration_minutes']:.1f} minutes")
+                        log_to_file_only(f"  Confidence: {performance_data['frameview_correlation']['correlation_confidence']}")
+                        
+                        # Show performance info to user if correlation found
+                        comparison = performance_data.get('performance_comparison', {})
+                        if comparison.get('has_baseline'):
+                            fps_delta = comparison['fps_delta']
+                            stability_delta = comparison['stability_delta']
+                            print(f"Performance vs. previous backup:")
+                            print(f"  FPS Change: {fps_delta:+.1f} ({comparison['performance_change_percent']:+.1f}%)")
+                            print(f"  Stability: {stability_delta:+.1f} FPS 1% low")
+                        else:
+                            print(f"Performance captured: {session_data['avg_fps']:.1f} FPS avg, {session_data['one_percent_low']:.1f} FPS 1% low")
+                    else:
+                        log_to_file_only("Failed to save performance correlation data")
+                else:
+                    log_to_file_only("No FrameView data found for correlation (graceful degradation)")
+                    
+                log_to_file_only("=== FRAMEVIEW CORRELATION COMPLETED ===")
+            else:
+                log_to_file_only("Performance correlation disabled in config")
+                
+        except ImportError as e:
+            log_to_file_only(f"FrameView integration not available: {e}")
+        except Exception as e:
+            log_to_file_only(f"Performance correlation failed: {e}")
+            logger.warning(f"Performance correlation failed: {e}")
+        
+        # Create restore batch file
         create_restore_batch(backup_folder, logger)
+        
+        # Display backup location to user
+        print(f"\nBackup completed successfully!")
+        print(f"Backup location: {backup_folder}")
+        print(f"Files backed up: {backup_count}")
+        if performance_correlation_success:
+            print(f"Performance data correlated ✓")
+    
     
     # Log backup completion (file only)
     log_to_file_only("=== BACKUP OPERATION COMPLETED ===")

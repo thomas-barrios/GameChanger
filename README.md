@@ -1,12 +1,15 @@
 # GameChanger
 
 ## Mission Statement
-In the high-stakes world of DCS World competitive play were every frame counts. A single stutter can lose a match in TACT, SATAL, or JustDogFights. Yet, optimizing DCS is a nightmare: configs sprawl across DCS folders, VR headsets, Nvidia Control Panel, and Windows settings. Tweaking one risks breaking another, and tracking what works is a manual slog.
+In the high-stakes world of DCS World competitive play where every frame counts, a single stutter can lose a match in TACT, SATAL, or JustDogFights. Yet, optimizing DCS is a nightmare: configs sprawl across DCS folders, VR headsets, Nvidia Control Panel, and Windows settings. Tweaking one risks breaking another, and tracking what works is a manual slog.
 
 GameChanger is the solution: a free, open-source tool to streamline config management, boost performance, and unite the community around shared knowledge—no more guesswork, just precision.
 
 ## Current Features
-- **Config Backup and Restoration**: Automatic backup of DCS configuration files on login
+- **Config Backup and Restoration**: Automatic backup of DCS configuration files
+- **Performance Impact Analysis**: Detailed analysis of configuration changes and their gaming performance impact
+- **Windows Services Optimization**: Gaming-focused Windows services management
+- **Performance Correlation Framework**: Track and correlate configuration changes with performance metrics
 
 ## Quick Start
 
@@ -32,22 +35,27 @@ GameChanger is the solution: a free, open-source tool to streamline config manag
    ```
 
 ### Configuration
-1. Create or edit `src/config.txt`:
+1. Create or edit `src/config.ini`:
    ```ini
-   # Root directory for backups
-   BackupRoot=D:\GameChanger\Backup
-   
-   # Saved Games location
-   SavedGamesPath=D:\Users\%USERNAME%\Saved Games
+   [DEFAULT]
+   backup_root = D:\GameChanger\Backup
+   saved_games_path = D:\Users\%USERNAME%\Saved Games
+   max_backups = 10
+   compress_backups = false
+   log_level = INFO
    ```
 
 ### Usage
-Run backup manually:
+#### Basic Commands
 ```powershell
-# From project root (after activating venv)
-python src/backup.py
+# Create backup
+python src/game_changer.py backup
 
-# From any location (full path)
+# Analyze performance impact between backups
+python src/game_changer.py compare --latest
+
+# Optimize Windows services for gaming
+python src/game_changer.py services optimize
 "C:\Projects\GameChanger\venv\Scripts\python.exe" "C:\Projects\GameChanger\venv\src\backup.py"
 ```
 

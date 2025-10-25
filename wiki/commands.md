@@ -297,7 +297,58 @@ GameChanger.exe services restore --backup-file "D:\GameChanger\Backup\services_b
 .\GameChanger.exe services restore --backup-file "D:\GameChanger\Backup\services_backup_2025-10-22_14-30-00.json" --verbose
 ```
 
-### 4. Schedule Command
+### 4. Compare Command
+Analyzes performance impact of configuration changes between backups.
+
+**Syntax:**
+```
+GameChanger.exe compare [--backup1 <path>] [--backup2 <path>] [--latest] [--output <file>]
+```
+
+**Options:**
+- `--backup1 <path>`: First backup folder (older baseline)
+- `--backup2 <path>`: Second backup folder (newer configuration)  
+- `--latest`: Compare against latest backup automatically
+- `--output <file>`: Custom output file path for performance report
+
+**Examples:**
+
+**CMD:**
+```cmd
+# Compare two specific backups
+GameChanger.exe compare --backup1 "D:\GameChanger\Backup\2025-10-22_14-30-00" --backup2 "D:\GameChanger\Backup\2025-10-23_09-15-00"
+
+# Compare against latest backup automatically
+GameChanger.exe compare --backup1 "D:\GameChanger\Backup\2025-10-22_14-30-00" --latest
+
+# Custom output location
+GameChanger.exe compare --latest --output "C:\Users\Thomas\Documents\GameChanger\performance-analysis.txt"
+
+# Verbose analysis
+GameChanger.exe compare --latest --verbose
+```
+
+**PowerShell:**
+```powershell
+# Compare two specific backups
+.\GameChanger.exe compare --backup1 "D:\GameChanger\Backup\2025-10-22_14-30-00" --backup2 "D:\GameChanger\Backup\2025-10-23_09-15-00"
+
+# Compare against latest backup automatically
+.\GameChanger.exe compare --backup1 "D:\GameChanger\Backup\2025-10-22_14-30-00" --latest
+
+# Custom output location
+.\GameChanger.exe compare --latest --output "C:\Users\Thomas\Documents\GameChanger\performance-analysis.txt"
+```
+
+**Performance Report Features:**
+- Performance risk assessment (High/Medium/Low)
+- Critical gaming setting changes analysis
+- Windows services optimization impact
+- Gaming performance testing recommendations
+- Configuration file overview by category
+- Future performance correlation framework status
+
+### 5. Schedule Command
 *Note: This command is planned but not yet implemented.*
 
 **Syntax:**
@@ -310,6 +361,24 @@ GameChanger.exe schedule [--preset <preset>] [--time <time>]
 - `--time <time>`: Time for daily/weekly backups (HH:MM format)
 
 ## Command Combinations & Workflows
+
+### Performance Monitoring Workflow
+```cmd
+# 1. Create baseline backup before changes
+GameChanger.exe backup --name "baseline-performance"
+
+# 2. Make configuration changes or optimize services
+GameChanger.exe services optimize
+
+# 3. Create post-change backup
+GameChanger.exe backup --name "post-optimization" 
+
+# 4. Analyze performance impact
+GameChanger.exe compare --backup1 "baseline-performance" --backup2 "post-optimization"
+
+# 5. Review performance report and test gaming performance
+# Report saved to: C:\Users\Thomas\Documents\GameChanger\[timestamp]-Performance-Report.txt
+```
 
 ### Typical Backup Workflow
 ```cmd

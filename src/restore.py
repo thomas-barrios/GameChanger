@@ -2,7 +2,10 @@ import os
 import sys
 import shutil
 import logging
+import configparser
 from pathlib import Path
+from datetime import datetime
+from typing import List, Optional
 
 try:
     from utils import setup_logging
@@ -36,6 +39,68 @@ except Exception:
         @staticmethod
         def get_section_base_path(section, file_paths):
             return str(Path(file_paths[0]).parent) if file_paths else ""
+
+def get_backup_root_from_config() -> Path:
+    """Get backup root directory from config.ini"""
+    # Default new backup location
+    default_backup_root = Path(r"C:\Users\Thomas\Documents\GameChanger\Config-Backups")
+    
+    try:
+        # Find config file
+        if hasattr(sys, '_MEIPASS'):  # Running from PyInstaller bundle
+            exe_dir = Path(sys.executable).parent
+        else:
+            # Development mode - use script directory
+            exe_dir = Path(__file__).parent
+        config_path = exe_dir / "config.ini"
+        
+        if config_path.exists():
+            parser = configparser.ConfigParser(interpolation=None)
+            parser.read(config_path, encoding='utf-8')
+            if parser.has_section('Paths') and 'BackupRoot' in parser['Paths']:
+                configured_path = Path(os.path.expandvars(parser['Paths']['BackupRoot']))
+                return configured_path
+    except Exception:
+        pass  # Use default if config reading fails
+    
+    return default_backup_root
+
+def discover_backups() -> List[Path]:
+    """Discover available backup folders, sorted by timestamp (newest first)"""
+    backup_root = get_backup_root_from_config()
+    
+    if not backup_root.exists():
+        return []
+    
+    backups = []
+    for item in backup_root.iterdir():
+        if item.is_dir() and "Config-Backup" in item.name:
+            # Extract timestamp from folder name for sorting
+            try:
+                # Expected format: YYYY-MM-DD-HH-MM-SS-Config-Backup
+                timestamp_part = item.name.replace("-Config-Backup", "").replace("-", "")
+                if len(timestamp_part) >= 14:  # YYYYMMDDHHMMSS
+                    backups.append(item)
+            except Exception:
+                # Include folders that don't match expected pattern
+                backups.append(item)
+    
+    # Sort by folder name (which contains timestamp) in descending order (newest first)
+    backups.sort(key=lambda x: x.name, reverse=True)
+    return backups
+
+def get_backup_by_index(index: int) -> Optional[Path]:
+    """Get backup folder by index (1=newest, 2=second newest, etc.)"""
+    backups = discover_backups()
+    
+    if index < 1 or index > len(backups):
+        return None
+    
+    return backups[index - 1]  # Convert to 0-based index
+
+def get_latest_backup() -> Optional[Path]:
+    """Get the most recent backup folder"""
+    return get_backup_by_index(1)
 
 def copy_with_permissions(src: Path, dst: Path, logger, dry_run: bool = False) -> tuple[bool, str, str]:
     """Safe copy with permission handling and dry-run support"""
@@ -129,16 +194,63 @@ def main(args=None):
     if args is None:
         import argparse
         parser = argparse.ArgumentParser()
-        parser.add_argument('--backup-folder', required=True, type=Path)
+        parser.add_argument('backup_index', nargs='?', type=int, help='Backup index (1=newest, 2=second newest, etc.)')
+        parser.add_argument('--backup-folder', type=Path, help='Specific backup folder path')
+        parser.add_argument('--last', action='store_true', help='Restore from the most recent backup')
         parser.add_argument('--dry-run', action='store_true')
         parser.add_argument('--force', action='store_true')
         args = parser.parse_args()
 
-    backup_path = args.backup_folder
+    # Determine backup path based on arguments
+    backup_path = None
+    
+    if args.backup_folder:
+        # Direct backup folder specified
+        backup_path = args.backup_folder
+    elif args.last:
+        # Restore latest backup
+        backup_path = get_latest_backup()
+        if not backup_path:
+            print("No backups found.")
+            print(f"Expected location: {get_backup_root_from_config()}")
+            return 1
+    elif args.backup_index:
+        # Restore by index
+        backup_path = get_backup_by_index(args.backup_index)
+        if not backup_path:
+            available_backups = discover_backups()
+            if not available_backups:
+                print("No backups found.")
+                print(f"Expected location: {get_backup_root_from_config()}")
+            else:
+                print(f"Backup index {args.backup_index} not found.")
+                print(f"Available backups: 1-{len(available_backups)}")
+                print("Use 'GameChanger.exe restore --last' for the newest backup.")
+            return 1
+    else:
+        # No backup specified - show available options
+        available_backups = discover_backups()
+        if not available_backups:
+            print("No backups found.")
+            print(f"Expected location: {get_backup_root_from_config()}")
+            return 1
+        
+        print("Available backups:")
+        for i, backup in enumerate(available_backups, 1):
+            print(f"  {i}: {backup.name}")
+        print()
+        print("Usage:")
+        print("  GameChanger.exe restore --last          # Restore newest backup")
+        print("  GameChanger.exe restore 1               # Restore newest backup") 
+        print("  GameChanger.exe restore 2               # Restore second newest backup")
+        return 0
+
     if not backup_path.exists():
         print(f"Backup folder not found: {backup_path}")
         return 1
 
+    print(f"Restoring from: {backup_path.name}")
+    
     # Setup logging
     log_file = backup_path.parent / "_RestoreLog.txt"
     logger = setup_logging(log_file)

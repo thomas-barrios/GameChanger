@@ -1,0 +1,230 @@
+GameChanger Configuration Comparison Report
+===========================================
+Generated: 2025-10-24 15:42:33
+Report Type: Configuration Changes Analysis
+Output: C:\Users\Thomas\Documents\GameChanger\Reports\2025-10-24-15-42-33-Config-Report.txt
+
+COMPARISON DETAILS
+==================
+Backup 1 (Baseline): 2025-10-22-17-43-38-Config-Backup
+Backup 2 (Current):   2025-10-23-09-15-22-Config-Backup
+Time Difference: 15 hours, 31 minutes, 44 seconds
+
+CONFIGURATION FILES ANALYSIS
+=============================
+
+[DCS Section - Critical Gaming Configuration]
+Base Path: D:\Users\Thomas\Saved Games\DCS\Config\
+
+┌─ options.lua ⚠️ CHANGED (High Impact)
+│  ├─ File Size: 15,234 bytes → 15,891 bytes (+657 bytes)
+│  ├─ Last Modified: 2025-10-22 17:42:15 → 2025-10-23 09:14:33
+│  ├─ Settings Changed: 7 configuration changes detected
+│  │
+│  ├─ GRAPHICS SETTINGS:
+│  │  • ["graphics"]["width"] = 1920 → 2560
+│  │  • ["graphics"]["height"] = 1080 → 1440
+│  │  • ["graphics"]["msaa"] = 2 → 4
+│  │  • ["graphics"]["shadows"] = 3 → 4
+│  │
+│  ├─ VR SETTINGS:
+│  │  • ["VR"]["enable"] = false → true
+│  │  • ["VR"]["msaaMaskSize"] = 0.42 → 0.65
+│  │
+│  └─ PERFORMANCE SETTINGS:
+│     • ["graphics"]["preloadRadius"] = 75000 → 150000
+│
+├─ autoexec.cfg ⚠️ CHANGED (Medium Impact)
+│  ├─ File Size: 1,024 bytes → 1,156 bytes (+132 bytes)
+│  ├─ Last Modified: 2025-10-22 17:42:15 → 2025-10-23 09:14:33
+│  ├─ Lines Added: 3 new configuration lines
+│  │
+│  ├─ NEW COMMANDS ADDED:
+│  │  + options.graphics.render_node_multiselect = true
+│  │  + options.graphics.force_feedback = true
+│  │  + log_level = info
+│  │
+│  └─ MODIFIED COMMANDS:
+│     • options.graphics.multiMonitorSetup = false → true
+│
+├─ nicknames.lua ✓ UNCHANGED
+│  └─ Binary Match: Identical (2,048 bytes)
+│
+├─ authdata.bin ✓ UNCHANGED
+│  └─ Binary Match: Identical (512 bytes)
+│
+└─ serverSettings.lua ⚠️ CHANGED (Low Impact)
+   ├─ File Size: 3,456 bytes → 3,512 bytes (+56 bytes)
+   ├─ Network Settings Modified: 2 changes
+   │
+   └─ MULTIPLAYER SETTINGS:
+      • cfg["allow_change_skin"] = true → false
+      • cfg["allow_spectators"] = false → true
+
+[VR Section - VR Gaming Configuration]
+Base Path: C:\Users\Thomas\AppData\Local\Pimax\
+
+├─ runtime\profile.json ⚠️ CHANGED (High VR Impact)
+│  ├─ File Size: 2,048 bytes → 2,201 bytes (+153 bytes)
+│  ├─ JSON Settings Modified: 4 critical VR changes
+│  │
+│  ├─ PIMAX DISPLAY SETTINGS:
+│  │  • "fov_horizontal" = 170 → 180
+│  │  • "fov_vertical" = 140 → 150
+│  │  • "refresh_rate" = 90 → 120
+│  │
+│  └─ RENDERING SETTINGS:
+│     • "render_quality" = 1.0 → 1.2
+│
+└─ PiTool\beforeConfig.json ✓ UNCHANGED
+   └─ JSON Match: Identical configuration
+
+[System Section - System-wide Gaming Settings]
+Base Path: C:\ProgramData\NVIDIA Corporation\Drs\
+
+├─ nvdrsdb0.bin ⚠️ CHANGED (High Performance Impact)
+│  ├─ File Size: 8,192 bytes → 8,704 bytes (+512 bytes)
+│  ├─ Binary Analysis: NVIDIA profile changes detected
+│  │
+│  └─ LIKELY CHANGES:
+│     • GPU performance profile modifications
+│     • Application-specific settings updates
+│     • Power management changes
+│
+├─ nvdrsdb1.bin ✓ UNCHANGED
+│  └─ Binary Match: Identical NVIDIA backup profile
+│
+└─ CapFrameX\AppSettings.json ⚠️ CHANGED (Medium Impact)
+   ├─ File Size: 1,536 bytes → 1,678 bytes (+142 bytes)
+   ├─ Performance Monitoring Settings: 3 changes
+   │
+   └─ OVERLAY SETTINGS:
+      • "show_fps_overlay" = false → true
+      • "overlay_position" = "top_left" → "top_right"
+      • "capture_frametime" = true → false
+
+WINDOWS SERVICES ANALYSIS
+==========================
+
+[Service State Changes - Gaming Optimization]
+
+STARTUP TYPE CHANGES (Gaming Performance Impact):
+├─ DiagTrack (Connected User Experiences and Telemetry)
+│  ├─ Manual → Disabled ⚡ PERFORMANCE GAIN EXPECTED
+│  ├─ Category: SafeToDisable - Telemetry & Diagnostics
+│  └─ Gaming Rationale: Eliminates telemetry overhead during gaming
+│
+├─ DPS (Diagnostic Policy Service)
+│  ├─ Automatic → Manual ⚡ PERFORMANCE GAIN EXPECTED
+│  ├─ Category: SafeToDisable - Telemetry & Diagnostics
+│  └─ Gaming Rationale: Reduces background diagnostic processing
+│
+└─ Spooler (Print Spooler)
+   ├─ Disabled → Automatic ⚠️ MINOR PERFORMANCE COST
+   ├─ Category: OptionalToDisable - Printing Services
+   └─ Gaming Rationale: Minimal impact unless printing during gaming
+
+SERVICE STATE CHANGES:
+├─ DiagTrack: Stopped → Stopped (consistent with disable)
+├─ DPS: Running → Stopped (optimized for gaming)
+└─ Spooler: Stopped → Running (service now active)
+
+PERFORMANCE IMPACT ASSESSMENT
+=============================
+
+🔴 HIGH IMPACT CHANGES (Immediate Performance Effect):
+├─ DCS Resolution Change: 1920x1080 → 2560x1440 (+77% pixels)
+├─ DCS MSAA Increase: 2x → 4x Anti-Aliasing (+100% GPU load)
+├─ VR Refresh Rate: 90Hz → 120Hz (+33% frame requirement)
+├─ VR Render Quality: 1.0 → 1.2 (+20% rendering load)
+└─ NVIDIA Profile Changes: Unknown GPU setting modifications
+
+🟡 MEDIUM IMPACT CHANGES (Moderate Performance Effect):
+├─ DCS Shadow Quality: Level 3 → 4 (+GPU rendering load)
+├─ VR FOV Expansion: 170°→180° horizontal (+display area)
+├─ Multi-Monitor Enable: Single → Multi-monitor setup
+└─ CapFrameX Overlay: Disabled → Enabled (+minimal overhead)
+
+🟢 LOW IMPACT CHANGES (Minimal Performance Effect):
+├─ DCS Preload Radius: Doubled (affects loading, not runtime)
+├─ Multiplayer Settings: Spectator/skin changes
+├─ Services Optimization: 2 services disabled for gaming
+└─ Force Feedback Enable: Haptic feedback activation
+
+GAMING PERFORMANCE PREDICTIONS
+==============================
+
+EXPECTED FRAMERATE IMPACT:
+├─ Baseline FPS (1920x1080, 2x MSAA): ~85 FPS estimated
+├─ Current FPS (2560x1440, 4x MSAA): ~45-50 FPS estimated
+└─ Performance Loss: ~40-47% FPS reduction expected
+
+VR PERFORMANCE CONCERNS:
+├─ 120Hz requirement with higher render quality
+├─ Potential motion-to-photon latency increase
+├─ GPU may struggle to maintain VR frame timing
+└─ Recommendation: Monitor for reprojection/stuttering
+
+SYSTEM OPTIMIZATION STATUS:
+├─ Windows Services: ✓ OPTIMIZED (2 gaming-focused changes)
+├─ NVIDIA Settings: ⚠️ UNKNOWN (binary changes detected)
+└─ Overall System: MIXED (optimized services, increased graphics load)
+
+RECOMMENDATIONS
+===============
+
+IMMEDIATE ACTIONS:
+1. 📊 Capture performance baseline with NVIDIA FrameView or CapFrameX
+2. 🎮 Test DCS performance in both flat screen and VR modes
+3. 📈 Monitor GPU utilization, frame times, and thermal throttling
+4. 🔍 Review NVIDIA Control Panel for unintended profile changes
+
+PERFORMANCE TESTING PLAN:
+1. Run identical test scenario (same mission, same aircraft)
+2. Record 5-minute performance sample with current settings
+3. Compare against previous session data (if available)
+4. Document any stuttering, frame drops, or VR reprojection
+
+ROLLBACK STRATEGY:
+├─ DCS Settings: Restore options.lua from 2025-10-22 backup
+├─ VR Settings: Revert Pimax profile to previous configuration  
+├─ NVIDIA: Use nvdrsdb1.bin backup if performance degrades
+└─ Services: Keep current optimization (performance benefit)
+
+FUTURE PERFORMANCE CORRELATION
+==============================
+
+📊 Performance Data Integration Status:
+├─ Configuration Change Detection: ✓ ACTIVE
+├─ Service Change Tracking: ✓ ACTIVE
+├─ NVIDIA FrameView Integration: ⏳ READY FOR IMPLEMENTATION
+├─ CapFrameX Data Import: ⏳ READY FOR IMPLEMENTATION
+└─ Automated Correlation Analysis: ⏳ FRAMEWORK PREPARED
+
+📈 Next Enhancement Phase:
+├─ Performance metrics will be automatically collected
+├─ Configuration changes will be correlated with FPS impact
+├─ Predictive performance modeling based on historical data
+└─ Automated recommendations for optimal gaming configurations
+
+TECHNICAL DETAILS
+==================
+
+Files Analyzed: 9 configuration files
+├─ Changed: 6 files (66.7%)
+├─ Unchanged: 3 files (33.3%)
+└─ Binary Analysis: 2 files
+
+Services Analyzed: 3 Windows services
+├─ Startup Modified: 3 services (100%)
+├─ State Changed: 1 service (33.3%)
+└─ Gaming Optimized: 2 services
+
+Analysis Duration: 2.34 seconds
+Report Generation: 0.89 seconds
+Total Processing Time: 3.23 seconds
+
+═══════════════════════════════════════════════════════════════════════════════
+Report Complete - GameChanger Configuration Analysis System
+For questions or issues, check logs at: D:\GameChanger\Backup\_ComparisonLog.txt
+═══════════════════════════════════════════════════════════════════════════════

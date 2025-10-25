@@ -1,4 +1,4 @@
-----------------------------------------------------------------
+--DONE----------------------------------------------------------------
 You are a very experienced developer with 30 years of experienced, your code is efficient, short and very readable, including comments and optimizations.
 
 You have profound knowledge of DCS both as user and developer, that allows you to optimize hardware, software to the upper most limits.
@@ -62,7 +62,7 @@ Analyse this software development project, consider the following:
 
 Do not build any code, just analyse, ponderate and ask for feedback.
 
-----------------------------------------------------------------
+--DONE----------------------------------------------------------------
 Nex step: create an .exe file
 evaluate all code, the .exe file must attend the following premises:
 - single .exe
@@ -74,7 +74,7 @@ evaluate all code, the .exe file must attend the following premises:
 	--schedulle:dailly
 do not change any code, just analyse, consider and ask for feedback
 
-----------------------------------------------------------------
+--DONE----------------------------------------------------------------
 Next we will include a restore-this-backup.bat in when a backup is created
 
 Evaluate all code, the and the following premises:
@@ -84,7 +84,7 @@ Evaluate all code, the and the following premises:
 Do not change any code, just analyse, consider and ask for feedback.
 
 
-----------------------------------------------------------------
+--DONE----------------------------------------------------------------
 Next we will merge config.txt and backup_files.txt in a single file
 
 Evaluate all code, the and the following premises:
@@ -96,7 +96,7 @@ Evaluate all code, the and the following premises:
 Do not change any code, just analyse, consider and ask for feedback.
 
 
-----------------------------------------------------------------
+--DONE----------------------------------------------------------------
 Next we will inproove the way the bakcup / restoration messaging is presented to the user and logged
 
 Evaluate all code, the and the following premises:
@@ -111,7 +111,7 @@ Do not change any code, just analyse, consider and ask for feedback.
 
 
 
-----------------------------------------------------------------
+--DONE----------------------------------------------------------------
 Next we will incorporate the windows services optimization functionality. The attached scripts disables selected services for a specific machine. We will incoporate similar function.
 
 Evaluate all code, the .exe file must attend the following premises:
@@ -219,12 +219,48 @@ Group,Service,Internal Name,What it does,Reason for Keeping
 
 Do not change any code, just analyse, consider and ask for feedback
 
-
-----------------------------------------------------------------
-Next we will:  
+---------------------------------------------------------------
+Next we will add the folloing features
 
 Evaluate all code, the and the following premises:
-- 
 
+- if no command is provided, display --help message
+- after backup show backup location
+- add option to restore last backup restore --last
+- add option to restore backup based on relative position 
+	restore 1 (restore the last, same as --last)
+	restore 2 (restore the 2nd newer backup... and so on 
+- remove MaxBackups=10 feature
+- remove feature CompressBackups=false
+- change bakup.json file name to services_bakup.json
+Evaluate all code, the and the following premises:
+- backups should be saved at C:\Users\Thomas\Documents\GameChanger\Config-Backups
+- Reports should be saved at C:\Users\Thomas\Documents\GameChanger\TimeStamp-<TypeOfReport>-Report.txt
+
+Do not change any code, just analyse, consider and ask for feedback.
+
+
+--DONE-------------------------------------------------------------
+Evaluate all code, the and the following premises:
+
+- include the feature to compare backups, all kings file, folder and services
+- the comparison shuold be at the alteration level, what configs were altered or not
+- the result shoud be presented as a txt report saved on disk at C:\Users\Thomas\Documents\GameChanger\TimeStamp-Config-Report.txt
+- The report should present
+- the changed settings between the last backups
+- in the future, we will colect performance data from NVIDA Frameview or CapFrameX and compare with backups, so we can relate config changes and performance corelations, have this as an future objective.
+- present report layout options so i can decide
+
+Do not change any code, just analyse, consider and ask for feedback.
+
+---------------------------------------------------------------
+Evaluate the following demands:
+- merge report format detailed/summary/performance into one only focusing on performance and utilizing current report logic
+- update help messages
+Do not change any code, just analyse, consider and ask for feedback.
+
+---------------------------------------------------------------
+Evaluate the following demands:
+- create an automated test for each and for all all functions
 Do not change any code, just analyse, consider and ask for feedback.
 
